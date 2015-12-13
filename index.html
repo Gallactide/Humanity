@@ -26,7 +26,6 @@
   var id = "";
 
   function join(){
-    //Checked
     id = getCookie("humanity_player_id");
     console.log(document.cookie)
     if (id==""){
@@ -48,7 +47,6 @@
   socket.on("add card", function(id){
     cards.push(cardByID(id));
   })
-</script>
+</script> 
 
-<button type="button" onclick="join()">JOIN</button>
-<button type="button" onclick="alert('check');">CHECK</button>
+<button type="button" onclick="join()">Debug Join</button>
