@@ -26,8 +26,14 @@ function join(){
   socket.emit("player_join", id);
 }
 
-function cardByID(id){
+function cardByText(id){
   return master.filter(function(data){
-    return data.id==id;
+    return data.text==id;
   });
+}
+
+function addCard(id){
+  var card = cardByText(id);
+  cards.push(card);
+  $("#cards").append($("<li>").text(card))
 }
