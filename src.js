@@ -16,24 +16,59 @@ function getCookie(cname) {
   return "";
 }
 
+//Server
+
 function join(){
-  id = getCookie("humanity_player_id");
-  console.log(document.cookie)
-  if (id==""){
-    id = window.prompt("Enter Your Name:", "Name");
-    setCookie("humanity_player_id", id, 1);
+  player.id = getCookie("humanity_player_id");
+  if (player.id==""){
+    player.id = window.prompt("Enter Your Name:", "Name");
+    setCookie("humanity_player_id", player.id, 1);
   }
-  socket.emit("player_join", id);
+  socket.emit("join", player.id);
+  console.log("Joined.");
 }
 
-function cardByText(id){
-  return master.filter(function(data){
-    return data.text==id;
-  });
+function pick(card){
+  console.log("Picked Card.");
+  if (card.cardType == "A"){
+    socket.emit("submit answer", card.text, id);
+  } else {
+    socket.emit("submit question", card.text, id);
+  }
 }
 
 function addCard(id){
-  var card = cardByText(id);
+  var card = cardByID(id)[0];
   cards.push(card);
-  $("#cards").append($("<li>").text(card))
+  $("#cards").append($("<li>").text(card.text));
+  console.log(cards);
+}
+
+function point(id){
+  for (var i = 0; i<players.length; i++){
+    if(players[i].id==id){
+      players[i].points+=1;
+    }
+  }
+  console.log(id+" earned a point.");
+}
+
+//Filters
+
+function cardByID(id){
+  return cardDict.filter(function(data){
+    return data.id==id;
+  });
+}
+
+function questions(d){
+  return d.filter(function(data){
+    return data.type=="Q";
+  });
+}
+
+function answers(d){
+  return d.filter(function(data){
+    return data.type=="A";
+  });
 }

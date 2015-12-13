@@ -1,21 +1,28 @@
 <script src="/socket.io/socket.io.js"></script>
-<script src="https://raw.githubusercontent.com/samurailink3/hangouts-against-humanity/master/source/data/cards.js"></script>
-<script src="https://raw.githubusercontent.com/Gallactide/Humanity/master/src.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script type="text/javascript" src="cards.js"></script>
+<script type="text/javascript" src="src.js"></script>
 
 <script>
   var cards = [];
+  var player = {"id":"", "points":0};
+  var players = [];
+
   var socket = io();
 
-  var id = "";
+  socket.on("ping", function(){
+    console.log("pinged");
+  });
 
-  socket.on("add card", function(id){
-    var card = cardByText(id);
-    cards.push(card);
-    $("#cards").append($("<li>").text(card))
+  socket.on("point", point);
+
+  socket.on("join", function(id){
+    players.push({"id":id, "points":0});
+    $("#players").append($("<li>").text(id+" "+0));
   })
+
+  //Main
+  $(document).ready(join);
 </script>
-
-<button type="button" onclick="join()">Debug Join</button>
-
-<ul id="cards">
+<ul id="players">
 </ul>
