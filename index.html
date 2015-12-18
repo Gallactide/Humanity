@@ -1,28 +1,223 @@
 <script src="/socket.io/socket.io.js"></script>
+<script type="text/javascript" src="iscroll.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-<script type="text/javascript" src="cards.js"></script>
-<script type="text/javascript" src="src.js"></script>
+<script type="text/javascript" src="https://cdn.rawgit.com/Gallactide/Humanity/master/cards.js"></script>
+
+<meta name="apple-mobile-web-app-capable" content="yes" />
 
 <script>
+  localStorage.debug = 'socket.io-client:socket'
+
   var cards = [];
   var player = {"id":"", "points":0};
   var players = [];
+  var czar = false;
+  var updated = new Date().getTime();
 
+  var name = window.location.pathname.slice(1);
   var socket = io();
+
+  console.log("Joining room "+name);
+
+  //iScroll
+  function loaded(){
+    var myScroll = new IScroll('#wrapper', {
+      disableMouse: true,
+      disablePointer: true,
+      eventPassthrough: true,
+      scrollbars: true,
+      snap: "li"
+    });
+  }
+
+  //FUNCTIONS
+  function updatePlayer(player){
+    for (var i = 0; i<players.length; i++){
+      if (players[i].id == player.id){
+        players[i].points = player.points;
+      };
+    };
+  };
+  function update(){
+    updated = new Date().getTime();
+  }
+  function setCookie(cname, cvalue, exdays) {
+    var d = new Date();
+    d.setTime(d.getTime() + (exdays*24*60*60*1000));
+    var expires = "expires="+d.toUTCString();
+    document.cookie = cname + "=" + cvalue + "; " + expires;
+  }
+  function getCookie(cname) {
+    var name = cname + "=";
+    var ca = document.cookie.split(';');
+    for(var i=0; i<ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0)==' ') c = c.substring(1);
+        if (c.indexOf(name) == 0) return c.substring(name.length,c.length);
+    }
+    return "";
+  }
+
+  //Server
+  function join(){
+    //player.id = getCookie("humanity_player_id");
+    if (player.id==""){
+      player.id = window.prompt("Enter Your Name:", "Name");
+      setCookie("humanity_player_id", player.id, 1);
+    }
+    socket.emit("join", player.id);
+    $("#players").append($("<li>").text(player.id+" "+0));
+    console.log("Joined.");
+    update();
+  }
+
+  function addCard(id){
+    var card = cardByID(id)[0];
+    cards.push(card);
+    $("#cards").append($("<li>").text(card.text));
+    console.log(cards);
+  }
+
+  function point(id){
+    for (var i = 0; i<players.length; i++){
+      if(players[i].id==id){
+        players[i].points+=1;
+      }
+    }
+    update();
+    console.log(id+" earned a point.");
+  }
+
+  //Filters
+  function cardByID(id){
+    return cardDict.filter(function(data){
+      return data.id==id;
+    });
+  }
+  function questions(d){
+    return d.filter(function(data){
+      return data.type=="Q";
+    });
+  }
+  function answers(d){
+    return d.filter(function(data){
+      return data.type=="A";
+    });
+  }
+
+  //Mechanics
+  //Czar:
+  function choice(player){
+    socket.emit("point", player);
+    socket.emit("czar", player);
+    czar=false;
+  }
+  //Output
+  function showAnswers(){
+    var view = document.getElementByClassName('mainView');
+    var options = answers(cards);
+    var node;
+    for (var i = 0; i<options.length; i++){
+      node = document.createElement("li");
+      node.setAttribute("class", "answer");
+      node.innerHTML=options[i].text;
+      view.addChild(node);
+    }
+  }
+  function showQuestions(){
+    var view = document.getElementByClassName('mainView');
+    var options = questions(cards);
+    var node;
+    for (var i = 0; i<options.length; i++){
+      node = document.createElement("li");
+      node.setAttribute("class", "question");
+      node.innerHTML=options[i].text;
+      view.addChild(node);
+    }
+  }
+  function showOptions(){
+    var view = document.getElementByClassName('mainView');
+    view.innerHTML = '<ul id="options"></ul>';
+    var options = questions(cards);
+    var node;
+    for (var i = 0; i<options.length; i++){
+      node = document.createElement("li");
+      node.setAttribute("class", "option");
+      node.innerHTML=options[i].text;
+      view.addChild(node);
+    }
+  }
+  function clearScreen(){
+    var view = document.getElementByClassName('mainView');
+    view.innerHTML = "";
+  }
+
+  //Handlers
+  socket.on("czar", function(player){
+    if (player.id == player){
+      czar=true;
+    }
+  });
 
   socket.on("ping", function(){
     console.log("pinged");
   });
 
+  socket.on("debug", function(){
+    console.log(player);
+    console.log(players);
+    console.log(cards);
+  });
+
   socket.on("point", point);
+
+  socket.on("update", function(data){
+    console.log(data);
+    if (data.updated>updated){
+      console.log("Updating: "+data.player);
+      updatePlayer(data.player);
+      $("#players").append($("<li>").text(data.player.id+" "+data.player.points));
+    };
+  })
 
   socket.on("join", function(id){
     players.push({"id":id, "points":0});
     $("#players").append($("<li>").text(id+" "+0));
+    console.log("Added player "+id);
+    console.log("Broadcasting Player List");
+    socket.emit("update", {"updated":new Date().getTime(), "player":player});
   });
+
+  socket.on("debug", function(data){
+    console.log(data);
+  });
+
+  socket.on("submit answer", function(answer, id){
+    var ans = document.createElement("li");
+    if (czar){ans.setAttribute("onclick", "choice("+id+")");};
+    document.getElementById('answerChoices')[0].appendChild(ans);
+  });
+
+  socket.on("submit question", function(answer, id){
+    document.getElementById('questionText').innerHTML=answer;
+  });
+
+  socket.on("new card", function(cardid, id){
+    if(id==player.id){
+      addCard(cardid);
+    };
+  })
 
   //Main
   $(document).ready(join);
 </script>
+
+
+<h1 id="questionText"></h1>
 <ul id="players">
 </ul>
+
+<div class="mainView" id="wrapper">
+  <ul id="answerChoices">
+  </ul>
+</div>

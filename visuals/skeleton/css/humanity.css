@@ -1,0 +1,33 @@
+#question_text {
+  font-weight: bold;
+  font-size: 20px;
+  font: Helvetica !important;
+  color: #ffffff;
+  margin: 4% 0 3.5% 4%;
+  float:left;
+}
+
+#question_stars {
+  font-weight: bold;
+  font-size: 40px;
+  font: Helvetica !important;
+  color: #ffffff;
+  margin: 2.5% 4% 0 0;
+  float:right;
+}
+
+/*
+margin: top right bottom left;
+*/
+
+#question {
+  left: %50;
+  margin-left: -25%;
+  margin: 0 auto;
+  height: 4.5em;
+  width: 35em;
+  background-color: #000000;
+  border: #000000 solid 5px;
+  border-radius: 10px;
+  margin-top: -1%;
+}

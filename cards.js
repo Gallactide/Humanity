@@ -1,5 +1,4 @@
 // ALL CREDIT TO https://github.com/samurailink3/hangouts-against-humanity/wiki/Cards
-
 //I DO NOT OWN THE LICENSE TO ANY OF THIS CONTENT
 
 cardDict = [
@@ -2957,4 +2956,6 @@ cardDict = [
     {"id":2952,"cardType":"Q","text":"To become a true Yanomamo warrior, you must prove that you can withstand _ without crying out.","numAnswers":1,"expansion":"CAHe6"},
     {"id":2953,"cardType":"Q","text":"Y\'all ready to get this thing started? I\'m Nick Cannon, and this is America\'s Got _.","numAnswers":1,"expansion":"CAHe6"},
     {"id":2954,"cardType":"Q","text":"If you had to describe the Card Czar, using only one of the cards in your hand, which one would it be?","numAnswers":1,"expansion":"CAHe6"}
-]
+];
+
+console.log("Cards Loaded.");
