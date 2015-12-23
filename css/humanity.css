@@ -1,0 +1,101 @@
+#question_text {
+  font-weight: bold;
+  font-size: 20px;
+  font: Helvetica !important;
+  color: #ffffff;
+  margin: 4.5% 0 3.5% 4%;
+  float:left;
+  display: block;
+  max-width: 433 !important;
+}
+
+#question_stars {
+  font-weight: bold;
+  font-size: 40px;
+  font: Helvetica !important;
+  color: #ffffff;
+  margin: 2.7% 4% 0 0;
+  float:right;
+}
+
+/*
+margin: top right bottom left;
+*/
+
+#question {
+  left: %50;
+  margin-left: -25%;
+  margin: 0 auto;
+  height: 4.5em;
+  width: 35em;
+  background-color: #000000;
+  border: #000000 solid 5px;
+  border-radius: 12px;
+  margin-top: -1%;
+}
+
+/*
+margin: top right bottom left;
+*/
+.card_A {
+  width: 200px;
+  height: 200px;
+  margin-left: 25px;
+  margin-right: 25px;
+  /* whatever width you want */
+  display: inline-block;
+  position: relative;
+  border: #888888 solid 1px;
+  border-radius: 5px;
+  box-shadow: 3px 3px 20px grey;
+}
+
+.card_Q {
+  background-color: #000000;
+  width: 200px;
+  height: 200px;
+  margin-left: 25px;
+  margin-right: 25px;
+  /* whatever width you want */
+  display: inline-block;
+  position: relative;
+  border: #888888 solid 1px;
+  border-radius: 5px;
+
+  box-shadow: 3px 3px 20px grey;
+}
+
+#card_text_a {
+  font-weight: bold;
+  font-size: 20px;
+  font: Helvetica !important;
+  color: #000000;
+  margin: 3% 10% 5% 8%;
+  float:left;
+}
+
+#card_text_q {
+  font-weight: bold;
+  font-size: 20px;
+  font: Helvetica !important;
+  color: #ffffff;
+  margin: 3% 10% 5% 8%;
+  float:left;
+}
+.card:after {
+  padding-top: 100.25%;
+  /* 16:9 ratio */
+  display: block;
+  content: '';
+}
+.main {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  /* fill parent */
+  background-color: deepskyblue;
+  /* let's see it! */
+  color: white;
+}

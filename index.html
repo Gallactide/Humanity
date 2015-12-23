@@ -1,14 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Humanity - Beta</title>
+  <link rel="stylesheet" href="/css/normalize.css">
+  <link rel="stylesheet" href="/css/skeleton.css">
+  <link rel="stylesheet" href="/css/humanity.css">
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+</head>
+
 <script src="/socket.io/socket.io.js"></script>
-<script type="text/javascript" src="iscroll.js"></script>
+<script type="text/javascript" src="/iscroll-lite.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 <script type="text/javascript" src="https://cdn.rawgit.com/Gallactide/Humanity/master/cards.js"></script>
-
-<meta name="apple-mobile-web-app-capable" content="yes" />
-
 <script>
   localStorage.debug = 'socket.io-client:socket'
 
-  var cards = [];
+  var cards = [cardByID(1228), cardByID(1308), cardByID(836), cardByID(451), cardByID(452), cardByID(2320)];
   var player = {"id":"", "points":0};
   var players = [];
   var czar = false;
@@ -18,17 +25,6 @@
   var socket = io();
 
   console.log("Joining room "+name);
-
-  //iScroll
-  function loaded(){
-    var myScroll = new IScroll('#wrapper', {
-      disableMouse: true,
-      disablePointer: true,
-      eventPassthrough: true,
-      scrollbars: true,
-      snap: "li"
-    });
-  }
 
   //FUNCTIONS
   function updatePlayer(player){
@@ -68,7 +64,6 @@
     socket.emit("join", player.id);
     $("#players").append($("<li>").text(player.id+" "+0));
     console.log("Joined.");
-    update();
   }
 
   function addCard(id){
@@ -92,14 +87,14 @@
   function cardByID(id){
     return cardDict.filter(function(data){
       return data.id==id;
-    });
+    })[0];
   }
-  function questions(d){
+  function questionsFilter(d){
     return d.filter(function(data){
       return data.type=="Q";
     });
   }
-  function answers(d){
+  function answersFilter(d){
     return d.filter(function(data){
       return data.type=="A";
     });
@@ -113,28 +108,19 @@
     czar=false;
   }
   //Output
-  function showAnswers(){
-    var view = document.getElementByClassName('mainView');
-    var options = answers(cards);
+
+  function renderCards(answers){
+    var view = document.getElementsByClassName('mainView')[0];
     var node;
-    for (var i = 0; i<options.length; i++){
-      node = document.createElement("li");
-      node.setAttribute("class", "answer");
-      node.innerHTML=options[i].text;
-      view.addChild(node);
-    }
+    for (var i = 0; i<answers.length; i++){
+      node = document.createElement("div");
+      node.setAttribute("class", "card_A");
+      node.innerHTML='<p id="card_text_a">'+answers[i].text+'</p>';
+      view.appendChild(node);
+    };
+    loaded();
   }
-  function showQuestions(){
-    var view = document.getElementByClassName('mainView');
-    var options = questions(cards);
-    var node;
-    for (var i = 0; i<options.length; i++){
-      node = document.createElement("li");
-      node.setAttribute("class", "question");
-      node.innerHTML=options[i].text;
-      view.addChild(node);
-    }
-  }
+
   function showOptions(){
     var view = document.getElementByClassName('mainView');
     view.innerHTML = '<ul id="options"></ul>';
@@ -147,6 +133,7 @@
       view.addChild(node);
     }
   }
+
   function clearScreen(){
     var view = document.getElementByClassName('mainView');
     view.innerHTML = "";
@@ -209,7 +196,11 @@
   })
 
   //Main
-  $(document).ready(join);
+  $(document).ready(function(){
+    join();
+    update();
+    //renderCards(cards);
+  });
 </script>
 
 
@@ -217,7 +208,26 @@
 <ul id="players">
 </ul>
 
-<div class="mainView" id="wrapper">
-  <ul id="answerChoices">
+<div id="wrapper">
+  <ul>
+    <li>Test</li>
+    <li>Test</li>
+    <li>Test</li>
+    <li>Test</li>
+    <li>Test</li>
+    <li>Test</li>
+    <li>Test</li>
+    <li>Test</li>
+    <li>Test</li>
+    <li>Test</li>
+    <li>Test</li>
+    <li>Test</li>
+    <li>Test</li>
+    <li>Test</li>
+    <li>Test</li>
+    <li>Test</li>
+    <li>Test</li>
   </ul>
+</div>
+<div class="mainView" >
 </div>

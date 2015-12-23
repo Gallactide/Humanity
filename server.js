@@ -1,6 +1,7 @@
 var app = require('express')();
 var http = require('http').Server(app);
 var io = require('socket.io')(http, {});
+var path = require('path');
 
 var MAX_ROOMS = 10;
 var VERBOSE = false;
@@ -24,13 +25,14 @@ app.get('/room/:roomName', function(req, res){
   res.sendFile('index.html', { root : __dirname});
 });
 
-app.get('/src.js', function(req, res){
-  res.sendFile('src.js', { root : __dirname});
+app.get('/:file', function(req, res){
+  console.log("GET Request: "+req.params.file);
+  res.sendFile(__dirname+"/"+req.params.file);
 });
 
-app.get('/cards.js', function(req, res){
-  res.sendFile('cards.js', { root : __dirname});
-  console.log("GET Request: /cards.js")
+app.get('/css/:style', function(req, res){
+  console.log("GET Request: "+req.params.style);
+  res.sendFile(__dirname+"/css/"+req.params.style);
 });
 
 //Basic
@@ -76,8 +78,6 @@ io.on('connection', function(socket){
     socket.broadcast.to(room).emit('czar', player);
   })
 });
-
-
 
 var port = 3000;
 
