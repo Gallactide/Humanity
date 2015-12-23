@@ -26,7 +26,7 @@
 
   console.log("Joining room "+name);
 
-  //FUNCTIONS
+  //Basic Functionality
   function updatePlayer(player){
     for (var i = 0; i<players.length; i++){
       if (players[i].id == player.id){
@@ -34,15 +34,18 @@
       };
     };
   };
+
   function update(){
     updated = new Date().getTime();
   }
+
   function setCookie(cname, cvalue, exdays) {
     var d = new Date();
     d.setTime(d.getTime() + (exdays*24*60*60*1000));
     var expires = "expires="+d.toUTCString();
     document.cookie = cname + "=" + cvalue + "; " + expires;
   }
+
   function getCookie(cname) {
     var name = cname + "=";
     var ca = document.cookie.split(';');
@@ -108,36 +111,23 @@
     czar=false;
   }
   //Output
-
-  function renderCards(answers){
-    var view = document.getElementsByClassName('mainView')[0];
-    var node;
-    for (var i = 0; i<answers.length; i++){
-      node = document.createElement("div");
-      node.setAttribute("class", "card_A");
-      node.innerHTML='<p id="card_text_a">'+answers[i].text+'</p>';
-      view.appendChild(node);
-    };
-    loaded();
+  //Question
+  function setQuestion(id){
+    var card = cardByID(id);
+    document.getElementById("question_text").getElementsByTagName("p")[0].innerHTML=card.text;
+    document.getElementById("question_text").getElementsByTagName("p")[0].innerHTML="* ".repeat(card.numAnswers);
   }
 
-  function showOptions(){
-    var view = document.getElementByClassName('mainView');
-    view.innerHTML = '<ul id="options"></ul>';
-    var options = questions(cards);
-    var node;
-    for (var i = 0; i<options.length; i++){
-      node = document.createElement("li");
-      node.setAttribute("class", "option");
-      node.innerHTML=options[i].text;
-      view.addChild(node);
-    }
+  //Options
+  function choice(text){
+    var card = cardByID(id);
+    answers.innerHTML = answers.innerHTML.substring(0,answers.innerHTML.length-2);
+    
   }
 
-  function clearScreen(){
-    var view = document.getElementByClassName('mainView');
-    view.innerHTML = "";
-  }
+
+  //Cards
+
 
   //Handlers
   socket.on("czar", function(player){
@@ -208,26 +198,18 @@
 <ul id="players">
 </ul>
 
-<div id="wrapper">
-  <ul>
-    <li>Test</li>
-    <li>Test</li>
-    <li>Test</li>
-    <li>Test</li>
-    <li>Test</li>
-    <li>Test</li>
-    <li>Test</li>
-    <li>Test</li>
-    <li>Test</li>
-    <li>Test</li>
-    <li>Test</li>
-    <li>Test</li>
-    <li>Test</li>
-    <li>Test</li>
-    <li>Test</li>
-    <li>Test</li>
-    <li>Test</li>
-  </ul>
-</div>
-<div class="mainView" >
-</div>
+<body style="background-color: #ffffff" id="">
+  <div id="question" align="center" >
+    <div id="question_text"><p>
+        Not another _ in the Hotel Elevator.</p></div>
+    <div id="question_stars"><p>
+      *</p></div>
+    <div style="clear:both;"></div>
+  </div>
+  <div id="options">
+    <div style="margin-top: 1.5em;"></div>
+  </div>
+  <div class="wrapper" id="wrapper">
+    <div style="margin-top: 3.5em;"></div>
+  </div>
+</body>

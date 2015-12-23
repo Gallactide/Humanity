@@ -59,7 +59,6 @@ io.on('connection', function(socket){
   });
 
   socket.on('submit question', function(answer, id){
-    console.log(id+" asked '"+answer+"'")
     socket.broadcast.to(room).emit('submit question', answer, id);
   });
 
