@@ -18,10 +18,6 @@
   float:right;
 }
 
-/*
-margin: top right bottom left;
-*/
-
 #question {
   position: fixed;
   left: 0;
@@ -74,9 +70,6 @@ margin: top right bottom left;
 
 #seperator {color:grey; height:1px; width:97%; background:#ccc; border:none;}
 
-/*
-margin: top right bottom left;
-*/
 .card_A {
   width: 200px;
   height: 200px;
@@ -103,11 +96,10 @@ margin: top right bottom left;
   position: relative;
   border: #888888 solid 1px;
   border-radius: 5px;
-
   box-shadow: 3px 3px 20px grey;
 }
 
-#card_text_a {
+#card_text_A {
   font-weight: bold;
   font-size: 20px;
   font: Helvetica !important;
@@ -116,7 +108,7 @@ margin: top right bottom left;
   float:left;
 }
 
-#card_text_q {
+#card_text_Q {
   font-weight: bold;
   font-size: 20px;
   font: Helvetica !important;
@@ -129,15 +121,4 @@ margin: top right bottom left;
   /* 16:9 ratio */
   display: block;
   content: '';
-}
-.main {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  right: 0;
-  left: 0;
-  /* fill parent */
-  background-color: deepskyblue;
-  /* let's see it! */
-  color: white;
 }

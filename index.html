@@ -16,10 +16,18 @@
   localStorage.debug = 'socket.io-client:socket'
 
   var cards = [cardByID(1228), cardByID(1308), cardByID(836), cardByID(451), cardByID(452), cardByID(2320)];
+  var submission = [];
   var player = {"id":"", "points":0};
   var players = [];
-  var czar = false;
   var updated = new Date().getTime();
+
+  //Status Variables
+  var answering = false;
+  var required;
+  var answered;
+  var czar = false;
+  var seq = false;
+
 
   var name = window.location.pathname.slice(1);
   var socket = io();
@@ -72,7 +80,7 @@
   function addCard(id){
     var card = cardByID(id)[0];
     cards.push(card);
-    $("#cards").append($("<li>").text(card.text));
+
     console.log(cards);
   }
 
@@ -104,29 +112,91 @@
   }
 
   //Mechanics
-  //Czar:
-  function choice(player){
-    socket.emit("point", player);
-    socket.emit("czar", player);
-    czar=false;
-  }
+
   //Output
+  //Cards
+  function appendCard(card){
+    var element = '\n<div class="card_'+card.cardType+'"><p id="card_text_'+card.cardType+'">'+card.text+'</p></div>';
+    document.getElementById('cards').innerHTML+=element;
+  }
+
   //Question
   function setQuestion(id){
     var card = cardByID(id);
     document.getElementById("question_text").getElementsByTagName("p")[0].innerHTML=card.text;
-    document.getElementById("question_text").getElementsByTagName("p")[0].innerHTML="* ".repeat(card.numAnswers);
+    document.getElementById("question_stars").getElementsByTagName("p")[0].innerHTML="* ".repeat(card.numAnswers);
+    required = card.numAnswers;
+  }
+
+  function setQuestionNum(num){
+    document.getElementById("question_stars").getElementsByTagName("p")[0].innerHTML="* ".repeat(num);
+    required = num;
   }
 
   //Options
-  function choice(text){
-    var card = cardByID(id);
-    answers.innerHTML = answers.innerHTML.substring(0,answers.innerHTML.length-2);
-    
+  function addMyOption(text){
+    var sequential;
+    if (answered>0){
+      sequential=true
+    } else {
+      document.getElementById('my_option').innerHTML+='<p style="text-align: center">Submit ?</p>';
+    }
+    var element = '\n<p style="border-right: #888888 solid 4px ';
+    if (sequential){
+      element += 'id="option_sequential"';
+    } else {
+      element += 'id="option"';
+    }
+    element += text;
+    element += "</p>";
+    submission.append(text);
+    answered+=1;
+    document.getElementById('my_option').innerHTML+=element;
+  }
+
+  function addSubmission(options){
+    var element = '<div id="my_status" onclick="optionHandler(false)"">\n';
+    var text;
+    for (var i = 0; i<options.length; i++){
+      if(i==0){
+        text = '<p id="option">'+options[i]+'</p>';
+      } else {
+        text = '<p id="option_sequential">'+options[i]+'</p>';
+      }
+      element+=text;
+    }
+    element+="</div>";
+    document.getElementById('options').innerHTML+=element;
+  }
+
+  function clearOptions(){
+    document.getElementById('options').innerHTML = '<div style="margin-top: 1.5em;"></div>\n<div id="my_option" onclick="optionHandler(true)"></div>';
+    answered = 0;
+  }
+
+  //Interaction Handlers
+  function cardClick(){
+    if (answering && answered<=required) {
+      addMyOption()
+      return;
+    }
+    if ()
+  }
+
+  function optionHandler(mine){
+    if (mine && czar==false) {
+      if (answered==required){
+        submitAnswer();
+      } else {
+        document.getElementById('status').innerHTML="Need "+required-answered+" more"
+      }
+    }
+    if (czar) {
+
+    }
   }
 
 
-  //Cards
 
 
   //Handlers
@@ -209,7 +279,7 @@
   <div id="options">
     <div style="margin-top: 1.5em;"></div>
   </div>
-  <div class="wrapper" id="wrapper">
+  <div class="cards" id="wrapper">
     <div style="margin-top: 3.5em;"></div>
   </div>
 </body>

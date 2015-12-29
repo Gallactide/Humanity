@@ -53,13 +53,12 @@ io.on('connection', function(socket){
   });
 
   //Players
-  socket.on('submit answer', function(answer, id){
-    //console.log(id+" answered '"+answer+"'");
-    socket.broadcast.to(room).emit('submit answer', answer, id);
+  socket.on('submit card', function(card_id, id){
+    socket.broadcast.to(room).emit('submit card', card_id, id);
   });
 
-  socket.on('submit question', function(answer, id){
-    socket.broadcast.to(room).emit('submit question', answer, id);
+  socket.on('submit option', function(option, id){
+    socket.broadcast.to(room).emit('submit option', option, id);
   });
 
   socket.on('join', function(id){
